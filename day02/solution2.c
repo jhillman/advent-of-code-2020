@@ -16,7 +16,7 @@ int main() {
     int validCount = 0;
 
     if (passwordsFile) {
-        while (fgets(passwordData, 50, passwordsFile)) {
+        while (fgets(passwordData, sizeof(passwordData), passwordsFile)) {
             sscanf(passwordData, "%d-%d %c: %s", &positionOne, &positionTwo, &character, password);
 
             characterOne = password[positionOne - 1];
