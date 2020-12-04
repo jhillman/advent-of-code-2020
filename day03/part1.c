@@ -8,13 +8,14 @@
 
 int main() {
     FILE *mapFile = fopen("map.txt", "r");
-    char mapLine[40];
-    char mapLineLength;
-    int downPosition = 0;
-    int rightPosition = 0;
-    int treeCount = 0;
 
     if (mapFile) {
+        char mapLine[40];
+        char mapLineLength;
+        int downPosition = 0;
+        int rightPosition = 0;
+        int treeCount = 0;
+
         while (fgets(mapLine, sizeof(mapLine), mapFile)) {
             mapLineLength = strlen(mapLine);
 

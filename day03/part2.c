@@ -13,21 +13,20 @@ typedef struct {
 
 int main() {
     FILE *mapFile = fopen("map.txt", "r");
-    char mapLine[40];
-    char mapLineLength;
-    Slope slopes[] = { 
-        { 1, 1, 0, 0, 0 }, 
-        { 3, 1, 0, 0, 0 }, 
-        { 5, 1, 0, 0, 0 }, 
-        { 7, 1, 0, 0, 0 }, 
-        { 1, 2, 0, 0, 0 } 
-    };
-    int slopeCount = sizeof(slopes) / sizeof(*slopes);
-    Slope *slope;
-    int i;
-    long totalTreeCount = 1;
 
     if (mapFile) {
+        char mapLine[40];
+        char mapLineLength;
+        Slope slopes[] = { 
+            { 1, 1, 0, 0, 0 }, 
+            { 3, 1, 0, 0, 0 }, 
+            { 5, 1, 0, 0, 0 }, 
+            { 7, 1, 0, 0, 0 }, 
+            { 1, 2, 0, 0, 0 } 
+        };
+        int slopeCount = sizeof(slopes) / sizeof(*slopes);
+        Slope *slope;
+
         while (fgets(mapLine, sizeof(mapLine), mapFile)) {
             mapLineLength = strlen(mapLine);
 
@@ -35,7 +34,7 @@ int main() {
                 --mapLineLength;
             }
 
-            for (i = 0; i < slopeCount; i++) {        
+            for (int i = 0; i < slopeCount; i++) {        
                 slope = &slopes[i];
 
                 if (slope->rightPosition == 0 && slope->downPosition == 0 && *mapLine == '#') {
@@ -58,7 +57,9 @@ int main() {
 
         fclose(mapFile);
 
-        for (i = 0; i < slopeCount; i++) {
+        long totalTreeCount = 1;
+
+        for (int i = 0; i < slopeCount; i++) {
             totalTreeCount *= slopes[i].treeCount;
         }
 

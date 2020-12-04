@@ -5,17 +5,17 @@
 
 int main() {
     FILE *passwordsFile = fopen("passwords.txt", "r");
-    char passwordData[50];
-    int positionOne;
-    int positionTwo;
-    char character;
-    char password[20];
-    int i;
-    char characterOne;
-    char characterTwo;
-    int validCount = 0;
 
     if (passwordsFile) {
+        char passwordData[50];
+        int positionOne;
+        int positionTwo;
+        char character;
+        char password[20];
+        char characterOne;
+        char characterTwo;
+        int validCount = 0;
+
         while (fgets(passwordData, sizeof(passwordData), passwordsFile)) {
             sscanf(passwordData, "%d-%d %c: %s", &positionOne, &positionTwo, &character, password);
 
