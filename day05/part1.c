@@ -19,24 +19,19 @@ int main() {
             int seatId;
             
             for (int i = 0; i < 10; i++) {
-                if (i < 7) {
-                    switch (passLine[i]) {
-                        case 'F':
-                            rowMax = rowMin + (rowMax - rowMin) / 2;
-                            break;
-                        case 'B':
-                            rowMin = rowMax - (rowMax - rowMin) / 2;
-                            break;
-                    }
-                } else {
-                    switch (passLine[i]) {
-                        case 'L':
-                            seatMax = seatMin + (seatMax - seatMin) / 2;
-                            break;
-                        case 'R':
-                            seatMin = seatMax - (seatMax - seatMin) / 2;
-                            break;
-                    }
+                switch (passLine[i]) {
+                    case 'F':
+                        rowMax = rowMin + (rowMax - rowMin) / 2;
+                        break;
+                    case 'B':
+                        rowMin = rowMax - (rowMax - rowMin) / 2;
+                        break;
+                    case 'L':
+                        seatMax = seatMin + (seatMax - seatMin) / 2;
+                        break;
+                    case 'R':
+                        seatMin = seatMax - (seatMax - seatMin) / 2;
+                        break;
                 }
 
                 seatId = rowMin * 8 + seatMin;
