@@ -70,7 +70,7 @@ int main() {
             int lowerMiddle = seatMinIndex + (seatMaxIndex - seatMinIndex) / 2;
             int upperMiddle = lowerMiddle;
 
-            if (seatMaxIndex - lowerMiddle > upperMiddle - seatMinIndex) {
+            if (seatMaxIndex - lowerMiddle > lowerMiddle - seatMinIndex) {
                 ++lowerMiddle;
             } else if (seatMaxIndex - upperMiddle > upperMiddle - seatMinIndex) {
                 ++upperMiddle;
