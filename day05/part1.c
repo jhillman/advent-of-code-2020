@@ -4,14 +4,14 @@
 #include <string.h>
 
 int main() {
-    FILE *passesFile = fopen("passes.txt", "r");
+    FILE *inputFile = fopen("input.txt", "r");
 
-    if (passesFile) {
+    if (inputFile) {
         char passLine[40];
         char passLineLength;
         int highestSeatId = 0;
 
-        while (fgets(passLine, sizeof(passLine), passesFile)) {
+        while (fgets(passLine, sizeof(passLine), inputFile)) {
             int rowMin = 0;
             int rowMax = 127;
             int seatMin = 0;
@@ -42,7 +42,7 @@ int main() {
             }
         }
 
-        fclose(passesFile);
+        fclose(inputFile);
 
         printf("%d", highestSeatId);
     }

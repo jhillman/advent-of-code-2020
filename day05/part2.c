@@ -9,14 +9,14 @@ int compare(const void *a, const void *b) {
 }
 
 int main() {
-    FILE *passesFile = fopen("passes.txt", "r");
+    FILE *inputFile = fopen("input.txt", "r");
 
-    if (passesFile) {
+    if (inputFile) {
         char ch;
         int seatIdCount = 0;
 
-        while (!feof(passesFile)) {
-            ch = fgetc(passesFile);
+        while (!feof(inputFile)) {
+            ch = fgetc(inputFile);
 
             if (ch == '\n') {
                 ++seatIdCount;
@@ -31,9 +31,9 @@ int main() {
         int seatIds[seatIdCount];
         int seatIdIndex = 0;
 
-        fseek(passesFile, 0, SEEK_SET);
+        fseek(inputFile, 0, SEEK_SET);
 
-        while (fgets(passLine, sizeof(passLine), passesFile)) {
+        while (fgets(passLine, sizeof(passLine), inputFile)) {
             int rowMin = 0;
             int rowMax = 127;
             int seatMin = 0;
@@ -59,7 +59,7 @@ int main() {
             seatIds[seatIdIndex++] = rowMin * 8 + seatMin;
         }
 
-        fclose(passesFile);
+        fclose(inputFile);
 
         qsort(seatIds, seatIdCount, sizeof(int), compare);
 

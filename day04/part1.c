@@ -28,16 +28,16 @@ int allThere(int keyValuePairsCount, char keyValuePairs[][20]) {
 }
 
 int main() {
-    FILE *batchesFile = fopen("batches.txt", "r");
+    FILE *inputFile = fopen("input.txt", "r");
 
-    if (batchesFile) {
+    if (inputFile) {
         char dataLine[100];
         char dataLineLength;
         char keyValuePairs[10][20];
         int keyValuePairsCount = 0;
         int validCount = 0;
 
-        while (fgets(dataLine, sizeof(dataLine), batchesFile)) {
+        while (fgets(dataLine, sizeof(dataLine), inputFile)) {
             dataLineLength = strlen(dataLine);
 
             if (dataLine[dataLineLength - 1] == '\n') {
@@ -63,7 +63,7 @@ int main() {
             }
         }
 
-        fclose(batchesFile);
+        fclose(inputFile);
 
         if (keyValuePairsCount > 0) {
             if (allThere(keyValuePairsCount, keyValuePairs)) {

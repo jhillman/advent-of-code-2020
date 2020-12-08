@@ -9,18 +9,18 @@ int compare(const void *a, const void *b) {
 }
 
 int main() {
-    FILE *passesFile = fopen("passes.txt", "r");
+    FILE *inputFile = fopen("input.txt", "r");
 
-    if (!passesFile) {
-        passesFile = fopen("../passes.txt", "r");
+    if (!inputFile) {
+        inputFile = fopen("../input.txt", "r");
     }
 
-    if (passesFile) {
+    if (inputFile) {
         char ch;
         int seatIdCount = 0;
 
-        while (!feof(passesFile)) {
-            ch = fgetc(passesFile);
+        while (!feof(inputFile)) {
+            ch = fgetc(inputFile);
 
             if (ch == '\n') {
                 ++seatIdCount;
@@ -37,9 +37,9 @@ int main() {
         int lowestSeatId = 1024;
         int highestSeatId = 0;
 
-        fseek(passesFile, 0, SEEK_SET);
+        fseek(inputFile, 0, SEEK_SET);
 
-        while (fgets(passLine, sizeof(passLine), passesFile)) {
+        while (fgets(passLine, sizeof(passLine), inputFile)) {
             int rowBit = 64;
             int seatBit = 4;
             int row = 0;
@@ -74,7 +74,7 @@ int main() {
             seatIds[seatIdIndex++] = seatId;
         }
 
-        fclose(passesFile);
+        fclose(inputFile);
 
         int seatId = 0;
 

@@ -7,16 +7,16 @@
 #define DOWN 1
 
 int main() {
-    FILE *mapFile = fopen("map.txt", "r");
+    FILE *inputFile = fopen("input.txt", "r");
 
-    if (mapFile) {
+    if (inputFile) {
         char mapLine[40];
         char mapLineLength;
         int downPosition = 0;
         int rightPosition = 0;
         int treeCount = 0;
 
-        while (fgets(mapLine, sizeof(mapLine), mapFile)) {
+        while (fgets(mapLine, sizeof(mapLine), inputFile)) {
             mapLineLength = strlen(mapLine);
 
             if (mapLine[mapLineLength - 1] == '\n') {
@@ -40,7 +40,7 @@ int main() {
             ++downPosition;
         }
 
-        fclose(mapFile);
+        fclose(inputFile);
 
         printf("%d", treeCount);
     }

@@ -8,20 +8,20 @@ int compare(const void *a, const void *b) {
 }
 
 int main() {
-    FILE *numbersFile = fopen("numbers.txt", "r");
+    FILE *inputFile = fopen("input.txt", "r");
 
-    if (numbersFile) {
+    if (inputFile) {
         int numberCount = 200;
         int targetSum = 2020;
         int numbers[numberCount];
         int number;
 
         for (int i = 0; i < numberCount; i++) {
-            fscanf(numbersFile, "%d", &number);
+            fscanf(inputFile, "%d", &number);
             numbers[i] = number;
         }
 
-        fclose(numbersFile);
+        fclose(inputFile);
 
         qsort(numbers, numberCount, sizeof(int), compare);
 

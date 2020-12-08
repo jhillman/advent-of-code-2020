@@ -4,9 +4,9 @@
 #include <string.h>
 
 int main() {
-    FILE *passwordsFile = fopen("passwords.txt", "r");
+    FILE *inputFile = fopen("input.txt", "r");
 
-    if (passwordsFile) {
+    if (inputFile) {
         char passwordData[50];
         int rangeStart;
         int rangeEnd;
@@ -16,7 +16,7 @@ int main() {
         int characterCount;
         int validCount = 0;
 
-        while (fgets(passwordData, sizeof(passwordData), passwordsFile)) {
+        while (fgets(passwordData, sizeof(passwordData), inputFile)) {
             sscanf(passwordData, "%d-%d %c: %s", &rangeStart, &rangeEnd, &character, password);
 
             passwordLength = strlen(password);
@@ -33,7 +33,7 @@ int main() {
             }
         }
 
-        fclose(passwordsFile);
+        fclose(inputFile);
 
         printf("%d", validCount);
     }

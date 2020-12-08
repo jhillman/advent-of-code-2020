@@ -20,9 +20,9 @@ int answerCount(int characterCounts[]) {
 }
 
 int main() {
-    FILE *groupsFile = fopen("groups.txt", "r");
+    FILE *inputFile = fopen("input.txt", "r");
 
-    if (groupsFile) {
+    if (inputFile) {
         char answersLine[50];
         char answersLineLength;
         int characterCounts[26];
@@ -30,7 +30,7 @@ int main() {
 
         resetCharacterCounts(characterCounts);
 
-        while (fgets(answersLine, sizeof(answersLine), groupsFile)) {
+        while (fgets(answersLine, sizeof(answersLine), inputFile)) {
             answersLineLength = strlen(answersLine);
 
             if (answersLine[answersLineLength - 1] == '\n') {
@@ -49,7 +49,7 @@ int main() {
             }
         }
 
-        fclose(groupsFile);
+        fclose(inputFile);
 
         sum += answerCount(characterCounts);
 
