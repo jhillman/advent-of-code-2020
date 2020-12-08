@@ -1,8 +1,6 @@
 /* Day 7, part 2 = 155802 */
 
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include "bags.h"
 
 int bagCount(struct Rule ruleLookUp[WAVY - BRIGHT + 1][YELLOW - AQUA + 1], struct Bag bag, enum Modifier modifier, enum Color color) {
