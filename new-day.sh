@@ -2,14 +2,14 @@
 
 if [ "$1" != "" ]; then
     day=$1
-    dayString=day
+    dayString=$1
      
-    if [[ $dayString != [0-9][0-9] ]]; then
+    if [[ $dayString == [0-9] ]]; then
         dayString="0${day}"
     fi
 
     mkdir "day${dayString}" 2> /dev/null
-    pushd "day${dayString}" > /dev/null
+    cd "day${dayString}"
 
     for ((part=1; part <= 2; part++)); do
     cat > "part${part}.c" <<EOF
