@@ -52,7 +52,7 @@ int main() {
 
         long arrangements[deviceJoltage + 1];
 
-        for (int i = 0; i < deviceJoltage; i++) {
+        for (int i = 0; i <= deviceJoltage; i++) {
             arrangements[i] = 0;
         }
 
