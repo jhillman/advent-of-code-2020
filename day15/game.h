@@ -18,22 +18,17 @@ int playGame(int turnCount) {
 
         fclose(inputFile);
 
-        int firstTime = 1;
-        int age;
+        int lastNumber = number;
 
         while (position < turnCount) {
-            if (firstTime) {
-                positions[number] = position;
-
-                number = 0;
+            if (positions[lastNumber] != 0) {
+                number = position - positions[lastNumber];
             } else {
-                age = position - positions[number];
-                positions[number] = position;
-
-                number = age;
+                number = 0;
             }
 
-            firstTime = positions[number] == 0;
+            positions[lastNumber] = position;
+            lastNumber = number;
 
             ++position;
         }
