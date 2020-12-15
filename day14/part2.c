@@ -1,4 +1,4 @@
-/* Day 14, part 2 = ? */
+/* Day 14, part 2 = 4877695371685 */
 
 #include <stdio.h>
 #include "computer.h"
@@ -9,6 +9,7 @@ int main() {
     if (computer) {
         char mask[MASK_LENGTH + 1];
         long bit;
+        long floatingBit;
         long floatingBitCount;
         long floatingBits;
         char *maskPtr;
@@ -18,16 +19,13 @@ int main() {
         long memorySum = 0;
 
         for (int i = 0; i < computer->instructionCount; i++) {
-            if (i == 0) {
-                printf("here\n");
-                strcpy(mask, "000000000000000000000000000000X1001X");
-            }
             switch (computer->instructions[i].type) {
                 case MASK:
                     strcpy(mask, computer->instructions[i].mask);
                     break;
                 case MEMORY:
                     bit = 1;
+                    floatingBit = 1;
                     floatingBitCount = 0;
                     floatingBits = 0;
                     maskPtr = mask + MASK_LENGTH - 1;
@@ -35,11 +33,15 @@ int main() {
                     value = computer->instructions[i].value;
 
                     while (maskPtr >= mask) {
-                        if (*maskPtr == '1' && (value & bit) == 0) {
+                        if (*maskPtr == '1' && (memoryOffset & bit) == 0) {
                             memoryOffset += bit;
                         } else if (*maskPtr == 'X') {
                             ++floatingBitCount;
                             floatingBits += bit;
+
+                            if ((memoryOffset & bit) == bit) {
+                                memoryOffset -= bit;
+                            }
                         }
 
                         --maskPtr;
@@ -48,29 +50,23 @@ int main() {
 
                     long floatingBitOptions = 1LL << floatingBitCount;
 
-                    printf("%ld, %ld, %ld\n", floatingBitCount, floatingBits, floatingBitOptions);
-
                     for (int j = 0; j < floatingBitOptions; j++) {
                         long long floatingMemoryOffset = memoryOffset;
                         bit = 1;
+                        floatingBit = 1;
 
                         for (int k = 0; k < floatingBitCount; k++) {
                             while ((bit & floatingBits) != bit) {
                                 bit <<= 1;
                             }
 
-                            printf("bit: %ld\n", bit);
-
-                            if ((j & bit) == bit) {
+                            if ((j & floatingBit) == floatingBit) {
                                 floatingMemoryOffset += bit;
-                            } else if ((j & bit) == j) {
-                                floatingMemoryOffset -= bit;
                             }
 
                             bit <<= 1;
+                            floatingBit <<= 1;
                         }
-
-                        printf("memory offset: %lld\n", floatingMemoryOffset);
 
                         memorySum -= computer->memory[floatingMemoryOffset];
                         memorySum += value;
