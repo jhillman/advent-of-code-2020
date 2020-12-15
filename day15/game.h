@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+struct NumberStats {
+    int position;
+    int age;
+};
+
 int playGame(int turnCount) {
     FILE *inputFile = fopen("input.txt", "r");
 
@@ -8,11 +13,10 @@ int playGame(int turnCount) {
         int position = 0;
         int number;
         char ch;
-        int *positions = (int *) calloc(turnCount, sizeof(int));
-        int *ages = (int *) calloc(turnCount, sizeof(int));
+        struct NumberStats *stats = (struct NumberStats *) calloc(turnCount, sizeof(struct NumberStats));
 
         while (fscanf(inputFile, "%d%c", &number, &ch) >= 1) {
-            positions[number] = position + 1;
+            stats[number].position = position + 1;
 
             ++position;
         }
@@ -20,23 +24,22 @@ int playGame(int turnCount) {
         fclose(inputFile);
 
         while (position < turnCount) {
-            if (ages[number] > 0) {
-                number = ages[number];
+            if (stats[number].age > 0) {
+                number = stats[number].age;
             } else {
                 number = 0;
             }
 
-            if (positions[number] > 0) {
-                ages[number] = position - (positions[number] - 1);
+            if (stats[number].position > 0) {
+                stats[number].age = position - (stats[number].position - 1);
             }
 
-            positions[number] = position + 1;
+            stats[number].position = position + 1;
 
             ++position;
         }
 
-        free(positions);
-        free(ages);
+        free(stats);
 
         return number;
     }
