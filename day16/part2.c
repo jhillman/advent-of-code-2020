@@ -61,10 +61,6 @@ int main() {
                     data->rules[index].valueIndex = i;
                     ++assignedValues;
 
-                    for (int j = 0; j < data->valueCount; j++) {
-                        overlayedValueMatrix[index][j] = 0;
-                    }
-
                     break;
                 }
             }
