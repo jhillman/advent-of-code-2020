@@ -51,7 +51,7 @@ int main() {
                 int index = -1;
 
                 for (int j = 0; j < data->ruleCount; j++) {
-                    if (overlayedValueMatrix[j][i]) {
+                    if (data->rules[j].valueIndex < 0 && overlayedValueMatrix[j][i]) {
                         ++oneCount;
                         index = j;
                     }
@@ -64,6 +64,8 @@ int main() {
                     for (int j = 0; j < data->valueCount; j++) {
                         overlayedValueMatrix[index][j] = 0;
                     }
+
+                    break;
                 }
             }
         }
