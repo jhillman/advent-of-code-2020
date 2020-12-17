@@ -47,7 +47,7 @@ struct Computer *getComputer() {
         computer->instructions = (struct Instruction *) calloc(computer->instructionCount, sizeof(struct Instruction));
         int instructionIndex = 0;
 
-        while (fgets(line, 200, inputFile)) {
+        while (fgets(line, 50, inputFile)) {
             if (strstr(line, "mask")) {
                 computer->instructions[instructionIndex].type = MASK;
 
