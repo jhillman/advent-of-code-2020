@@ -1,43 +1,37 @@
-struct ExpressionResult {
-    long value;
-    int offset;
-};
+#include <stdbool.h>
 
-struct ExpressionResult evaluate(char *expression, int advanced) {
+long evaluate(char *expression, int *expressionLength, bool advanced) {
     long value;
     long multiplicands[30];
     int multiplicandIndex = 0;
     char *operator = NULL;
     char *expressionStart = expression;
+    int length;
 
     while (*expression) {
         switch (*expression) {
             case '(':
                 if (operator) {
-                    struct ExpressionResult result = evaluate(expression + 1, advanced);
-
                     switch (*operator) {
                         case '+':
-                            value = value + result.value;
+                            value = value + evaluate(expression + 1, &length, advanced);
                             break;
                         case '*':
                             if (advanced) {
                                 multiplicands[multiplicandIndex++] = value;
-                                value = result.value;
+                                value = evaluate(expression + 1, &length, advanced);
                             } else {
-                                value = value * result.value;
+                                value = value * evaluate(expression + 1, &length, advanced);
                             }
                             break;
                     }
 
                     operator = NULL;
-                    expression += result.offset;
+                    expression += length;
                 } else {
-                    struct ExpressionResult result = evaluate(expression + 1, advanced);
+                    value = evaluate(expression + 1, &length, advanced);
 
-                    value = result.value;
-
-                    expression += result.offset;
+                    expression += length;
                 }
                 break;
             case ')':
@@ -45,7 +39,11 @@ struct ExpressionResult evaluate(char *expression, int advanced) {
                     value *= multiplicands[i];
                 }
 
-                return (struct ExpressionResult) { value, expression - expressionStart + 1 };
+                if (expressionLength) {
+                    *expressionLength = expression - expressionStart + 1;
+                }
+
+                return value;
             case '+':
             case '*':
                 operator = expression;
@@ -84,5 +82,5 @@ struct ExpressionResult evaluate(char *expression, int advanced) {
         value *= multiplicands[i];
     }
 
-    return (struct ExpressionResult) { value, 0 };
+    return value;
 }

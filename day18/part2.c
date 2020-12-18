@@ -11,7 +11,7 @@ int main() {
         long sum = 0;
 
         while (fgets(expression, sizeof(expression), inputFile)) {
-            sum += evaluate(expression, 1).value;
+            sum += evaluate(expression, NULL, true);
         }
 
         fclose(inputFile);
