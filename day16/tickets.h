@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 struct Range {
     int min;
@@ -14,7 +15,7 @@ struct Rule {
 };
 
 struct Value {
-    int valid;
+    bool valid;
     int value;
 };
 
