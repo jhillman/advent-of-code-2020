@@ -1,6 +1,7 @@
 /* Day 11, part 2 = 2059 */
 
 #include <stdio.h>
+#include <stdbool.h>
 #include "seats.h"
 
 struct SeatTraverser {
@@ -27,20 +28,20 @@ int occupiedSeatCount(char **seatLayout, int rowCount, int columnCount, int row,
 
         int rowIndex = row + seatTraverser.rowDelta;
         int columnIndex = column + seatTraverser.columnDelta;
-        int keepLooking = 1;
+        bool keepLooking = true;
 
         while (keepLooking && rowIndex >= 0 && rowIndex < rowCount && columnIndex >= 0 && columnIndex < columnCount) {
             switch (seatLayout[rowIndex][columnIndex]) {
                 case '#':
                     ++occupiedSeatCount;
-                    keepLooking = 0;
+                    keepLooking = false;
                     break;
                 case '.':
                     rowIndex += seatTraverser.rowDelta;
                     columnIndex += seatTraverser.columnDelta;
                     break;
                 case 'L':
-                    keepLooking = 0;
+                    keepLooking = false;
                     break;
             }
         }
