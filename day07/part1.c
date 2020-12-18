@@ -3,16 +3,16 @@
 #include <stdio.h>
 #include "bags.h"
 
-int bagCanContain(struct Rule ruleLookUp[WAVY - BRIGHT + 1][YELLOW - AQUA + 1], struct Bag bag, enum Modifier modifier, enum Color color) {
+bool bagCanContain(struct Rule ruleLookUp[WAVY - BRIGHT + 1][YELLOW - AQUA + 1], struct Bag bag, enum Modifier modifier, enum Color color) {
     struct Rule rule = ruleLookUp[bag.modifier][bag.color];
-    int canContain = 0;
+    bool canContain = false;
 
     if (rule.canContain) {
-        canContain = 1;
+        canContain = true;
     } else if (bag.modifier == modifier && bag.color == color) {
         ruleLookUp[bag.modifier][bag.color].canContain = 1;
 
-        canContain = 1;
+        canContain = true;
     } else if (rule.bagCount > 0) {
         for (int i = 0; !canContain && i < rule.bagCount; i++) {
             canContain = bagCanContain(ruleLookUp, rule.bags[i], modifier, color);

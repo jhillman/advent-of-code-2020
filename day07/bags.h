@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 enum Modifier {
     BRIGHT,
@@ -341,7 +342,7 @@ struct Rule {
     struct Bag bag;
     struct Bag *bags;
     int bagCount;
-    int canContain;
+    bool canContain;
 };
 
 struct RuleData {
@@ -402,7 +403,7 @@ struct RuleData readInput() {
             }
 
             data.rules[ruleIndex].bagCount = bagCount;
-            data.rules[ruleIndex].canContain = 0;
+            data.rules[ruleIndex].canContain = false;
 
             if (bagCount > 0) {
                 bagsPtr = strstr(rulesLine, separator) + strlen(separator);
