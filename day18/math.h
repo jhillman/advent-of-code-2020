@@ -84,5 +84,5 @@ struct ExpressionResult evaluate(char *expression, int advanced) {
         value *= multiplicands[i];
     }
 
-    return (struct ExpressionResult) { value, expression - expressionStart };
+    return (struct ExpressionResult) { value, 0 };
 }
