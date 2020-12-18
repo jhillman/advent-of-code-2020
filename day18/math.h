@@ -13,13 +13,7 @@ struct ExpressionResult evaluate(char *expression, int advanced) {
     while (*expression) {
         switch (*expression) {
             case '(':
-                if (operator == NULL) {
-                    struct ExpressionResult result = evaluate(expression + 1, advanced);
-
-                    value = result.value;
-
-                    expression += result.offset;
-                } else {
+                if (operator) {
                     struct ExpressionResult result = evaluate(expression + 1, advanced);
 
                     switch (*operator) {
@@ -38,6 +32,12 @@ struct ExpressionResult evaluate(char *expression, int advanced) {
 
                     operator = NULL;
                     expression += result.offset;
+                } else {
+                    struct ExpressionResult result = evaluate(expression + 1, advanced);
+
+                    value = result.value;
+
+                    expression += result.offset;
                 }
                 break;
             case ')':
@@ -51,9 +51,7 @@ struct ExpressionResult evaluate(char *expression, int advanced) {
                 operator = expression;
                 break;
             default:
-                if (operator == NULL) {
-                    value = *expression - '0';
-                } else {
+                if (operator) {
                     switch (*operator) {
                         case '+':
                             value = value + (*expression - '0');
@@ -69,6 +67,8 @@ struct ExpressionResult evaluate(char *expression, int advanced) {
                     }
 
                     operator = NULL;
+                } else {
+                    value = *expression - '0';
                 }
                 break;
         }
