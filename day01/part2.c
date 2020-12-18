@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 int compare(const void *a, const void *b) {
     return *(int *)b - *(int *)a;
@@ -28,7 +29,7 @@ int main() {
         int addend1;
         int addend2;
         int addend3;
-        int found = 0;
+        bool found = false;
 
         for (int i = 0; !found && i < numberCount; i++) {
             addend1 = numbers[i];
@@ -40,7 +41,7 @@ int main() {
                     addend3 = numbers[k];
 
                     if (addend1 + addend2 + addend3 == targetSum) {
-                        found = 1;
+                        found = true;
                     }
                 }
             }
