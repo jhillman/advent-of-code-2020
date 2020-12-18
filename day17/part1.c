@@ -1,19 +1,19 @@
 /* Day 17, part 1 = 286 */
 
 #include <stdio.h>
-#include "space.h"
+#include "pocket.h"
 
 int main() {
-    struct Space *space = readSpace(0);
+    struct PocketDimension *pocketDimension = readPocketDimension(false);
 
-    if (space) {
+    if (pocketDimension) {
         for (int i = 0; i < 6; i++) {
-            space = cycleSpace(space);
+            pocketDimension = cyclePocketDimension(pocketDimension);
         }
 
-        int activeCount = activeCubeCount(space);
+        int activeCount = activeCubeCount(pocketDimension);
 
-        freeSpace(space);
+        freePocketDimension(pocketDimension);
 
         printf("%d", activeCount);
     }
