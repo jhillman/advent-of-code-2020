@@ -12,12 +12,16 @@ struct ExpressionResult evaluate(char *expression, int advanced) {
 
     while (*expression) {
         switch (*expression) {
-            case '(': {
-                struct ExpressionResult result = evaluate(expression + 1, advanced);
-
+            case '(':
                 if (operator == NULL) {
+                    struct ExpressionResult result = evaluate(expression + 1, advanced);
+
                     value = result.value;
+
+                    expression += result.offset;
                 } else {
+                    struct ExpressionResult result = evaluate(expression + 1, advanced);
+
                     switch (*operator) {
                         case '+':
                             value = value + result.value;
@@ -33,10 +37,8 @@ struct ExpressionResult evaluate(char *expression, int advanced) {
                     }
 
                     operator = NULL;
+                    expression += result.offset;
                 }
-
-                expression += result.offset;
-            }
                 break;
             case ')':
                 for (int i = 0; i < multiplicandIndex; i++) {
