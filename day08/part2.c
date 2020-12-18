@@ -8,7 +8,7 @@ int changeInstruction(struct Instruction *instructions, int instructionCount) {
 
     for (int i = 0; i < instructionCount; i++) {
         if (instructions[i].operation != ACC && !instructions[i].changed) {
-            instructions[i].changed = 1;
+            instructions[i].changed = true;
 
             if (instructions[i].operation == NOP) {
                 instructions[i].operation = JMP;

@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 enum Operation {
     NOP,
@@ -11,7 +12,7 @@ struct Instruction {
     enum Operation operation;
     int argument;
     int runCount;
-    int changed;
+    bool changed;
 };
 
 struct BootData {
@@ -61,7 +62,7 @@ struct BootData readInput() {
 
             data.instructions[instructionIndex].argument = argument;
             data.instructions[instructionIndex].runCount = 0;
-            data.instructions[instructionIndex].changed = 0;
+            data.instructions[instructionIndex].changed = false;
 
             ++instructionIndex;
         }
