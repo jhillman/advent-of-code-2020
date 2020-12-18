@@ -3,27 +3,28 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 struct YearRange {
     int min;
     int max;
 };
 
-int yearValid(char *yearString, struct YearRange yearRange) {
+bool yearValid(char *yearString, struct YearRange yearRange) {
     if (strlen(yearString) != 4) {
-        return 0;
+        return false;
     }
 
     int year;
 
     if (sscanf(yearString, "%d", &year) != 1) {
-        return 0;
+        return false;
     }
 
     return year >= yearRange.min && year <= yearRange.max;
 }
 
-int heightValid(char *height) {
+bool heightValid(char *height) {
     int value;
 
     if (strstr(height, "cm") && sscanf(height, "%dcm", &value) == 1) {
@@ -32,22 +33,22 @@ int heightValid(char *height) {
         return value >= 59 && value <= 76;
     }
 
-    return 0;
+    return false;
 }
 
-int hairColorValid(char *hairColor) {
+bool hairColorValid(char *hairColor) {
     if (strlen(hairColor) != 7 || *hairColor != '#') {
-        return 0;
+        return false;
     }
 
     char characters[7];
     char character;
 
     if (sscanf(hairColor + 1, "%s", characters) != 1) {
-        return 0;
+        return false;
     }
 
-    int valid = 1;
+    bool valid = true;
 
     for (int i = 0; valid && i < 6; i++) {
         character = characters[i];
@@ -55,42 +56,42 @@ int hairColorValid(char *hairColor) {
         valid = (character >= '0' && character <= '9') || (character >= 'a' && character <= 'f');
     }
 
-    return 1;
+    return true;
 }
 
-int eyeColorValid(char *eyeColor) {
+bool eyeColorValid(char *eyeColor) {
     if (strlen(eyeColor) != 3) {
-        return 0;
+        return false;
     }
 
     char *colors[] = { "amb", "blu", "brn", "gry", "grn", "hzl", "oth" };
     int colorCount = sizeof(colors) / sizeof(*colors);
-    int valid = 0;
+    bool valid = false;
 
     for (int i = 0; !valid && i < colorCount; i++) {
         if (strcmp(eyeColor, colors[i]) == 0) {
-            valid = 1;
+            valid = true;
         }
     }
 
     return valid;
 }
 
-int passportIdValid(char *passportIdString) {
+bool passportIdValid(char *passportIdString) {
     if (strlen(passportIdString) != 9) {
-        return 0;
+        return false;
     }
 
     int passportId;
 
     if (sscanf(passportIdString, "%9d", &passportId) == 1) {
-        return 1;
+        return true;
     }
 
-    return 0;
+    return false;
 }
 
-int allThereAndValid(int keyValuePairsCount, char keyValuePairs[][20]) {
+bool allThereAndValid(int keyValuePairsCount, char keyValuePairs[][20]) {
     struct YearRange birthYearRange = { 1920, 2002 };
     struct YearRange issueYearRange = { 2010, 2020 };
     struct YearRange expirationYearRange = { 2020, 2030 };
@@ -100,7 +101,7 @@ int allThereAndValid(int keyValuePairsCount, char keyValuePairs[][20]) {
     char keyValueSeparator[] = ":";
     char *key;
     char *value;
-    int valid = 1;
+    bool valid = true;
     char allKeys[32] = "";
 
     for (int i = 0; valid && i < keyValuePairsCount; i++) {
@@ -129,7 +130,7 @@ int allThereAndValid(int keyValuePairsCount, char keyValuePairs[][20]) {
 
     for (int i = 0; valid && i < requiredKeyCount; i++) {
         if (!strstr(allKeys, requiredKeys[i])) {
-            valid = 0;
+            valid = false;
         }
     }
 

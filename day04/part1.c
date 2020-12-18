@@ -2,8 +2,9 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
-int allThere(int keyValuePairsCount, char keyValuePairs[][20]) {
+bool allThere(int keyValuePairsCount, char keyValuePairs[][20]) {
     char *requiredKeys[] = { "byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid" };
     int requiredKeyCount = sizeof(requiredKeys) / sizeof(*requiredKeys);
     char keyValueSeparator[] = ":";
@@ -16,11 +17,11 @@ int allThere(int keyValuePairsCount, char keyValuePairs[][20]) {
         }
     }
 
-    int allThere = 1;
+    bool allThere = true;
 
     for (int i = 0; allThere && i < requiredKeyCount; i++) {
         if (!strstr(allKeys, requiredKeys[i])) {
-            allThere = 0;
+            allThere = false;
         }
     }
 
