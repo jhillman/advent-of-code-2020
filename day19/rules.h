@@ -75,7 +75,7 @@ bool matchesRule(char *input, struct CurrentRule *currentRule, struct Rule *rule
     } else if (rule.alternates) {
         bool alternatesMatch = false;
 
-        for (int i = 0; !alternatesMatch &&  i < **rule.alternates; i++) {
+        for (int i = 0; !alternatesMatch && i < **rule.alternates; i++) {
             alternatesMatch = matchesSequence(input, rule.alternates[i + 1], copyCurrentRule(nextRule), rules);
         }
 
