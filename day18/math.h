@@ -14,14 +14,14 @@ long evaluate(char *expression, int *expressionLength, bool advanced) {
                 if (operator) {
                     switch (*operator) {
                         case '+':
-                            value = value + evaluate(expression + 1, &length, advanced);
+                            value += evaluate(expression + 1, &length, advanced);
                             break;
                         case '*':
                             if (advanced) {
                                 multiplicands[multiplicandIndex++] = value;
                                 value = evaluate(expression + 1, &length, advanced);
                             } else {
-                                value = value * evaluate(expression + 1, &length, advanced);
+                                value *= evaluate(expression + 1, &length, advanced);
                             }
                             break;
                     }
@@ -52,14 +52,14 @@ long evaluate(char *expression, int *expressionLength, bool advanced) {
                 if (operator) {
                     switch (*operator) {
                         case '+':
-                            value = value + (*expression - '0');
+                            value += (*expression - '0');
                             break;
                         case '*':
                             if (advanced) {
                                 multiplicands[multiplicandIndex++] = value;
                                 value = (*expression - '0');
                             } else {
-                                value = value * (*expression - '0');
+                                value *= (*expression - '0');
                             }
                             break;
                     }
