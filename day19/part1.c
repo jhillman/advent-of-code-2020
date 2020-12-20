@@ -1,7 +1,7 @@
 /* Day 19, part 1 = 187 */
 
 #include <stdio.h>
-#include "rules.h"
+#include "match.h"
 
 int main() {
     struct RulesData *data = readRulesData();
