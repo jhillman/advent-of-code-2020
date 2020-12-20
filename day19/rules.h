@@ -4,8 +4,7 @@
 
 struct Rule {
     char character;
-    int *sequence;
-    int **alternates;
+    int **options;
 };
 
 struct CurrentRule {
@@ -23,22 +22,22 @@ bool matchesRule(char *input, struct CurrentRule *currentRule, struct Rule *rule
 void freeRule(struct Rule *rule);
 void freeCurrentRule(struct CurrentRule *currentRule);
 
-bool matchesSequence(char *input, int *sequence, struct CurrentRule *currentRule, struct Rule *rules) {
-    struct CurrentRule *sequenceRule =  (struct CurrentRule *) calloc(1, sizeof(struct CurrentRule *));
-    struct CurrentRule *currentSequenceRule = sequenceRule;
+bool matchesOption(char *input, int *option, struct CurrentRule *currentRule, struct Rule *rules) {
+    struct CurrentRule *optionRule =  (struct CurrentRule *) calloc(1, sizeof(struct CurrentRule *));
+    struct CurrentRule *currentOptionRule = optionRule;
 
-    for (int i = 0; i < *sequence; i++) {
+    for (int i = 0; i < *option; i++) {
         if (i > 0) {
-            currentSequenceRule->next = (struct CurrentRule *) calloc(1, sizeof(struct CurrentRule *));
-            currentSequenceRule = currentSequenceRule->next;
+            currentOptionRule->next = (struct CurrentRule *) calloc(1, sizeof(struct CurrentRule *));
+            currentOptionRule = currentOptionRule->next;
         }
 
-        currentSequenceRule->number = sequence[i + 1];
+        currentOptionRule->number = option[i + 1];
     }
 
-    currentSequenceRule->next = currentRule;
+    currentOptionRule->next = currentRule;
 
-    return matchesRule(input, sequenceRule, rules);
+    return matchesRule(input, optionRule, rules);
 }
 
 struct CurrentRule *copyCurrentRule(struct CurrentRule *currentRule) {
@@ -69,19 +68,17 @@ bool matchesRule(char *input, struct CurrentRule *currentRule, struct Rule *rule
     struct CurrentRule *nextRule = currentRule->next;
 
     free(currentRule);
+    
+    if (rule.options) {
+        bool optionsMatch = false;
 
-    if (rule.sequence) {
-        return matchesSequence(input, rule.sequence, nextRule, rules);
-    } else if (rule.alternates) {
-        bool alternatesMatch = false;
-
-        for (int i = 0; !alternatesMatch && i < **rule.alternates; i++) {
-            alternatesMatch = matchesSequence(input, rule.alternates[i + 1], copyCurrentRule(nextRule), rules);
+        for (int i = 0; !optionsMatch && i < **rule.options; i++) {
+            optionsMatch = matchesOption(input, rule.options[i + 1], copyCurrentRule(nextRule), rules);
         }
 
         freeCurrentRule(nextRule);
 
-        return alternatesMatch;
+        return optionsMatch;
     } else {
         if (*input == rule.character) {
             return matchesRule(input + 1, nextRule, rules);
@@ -93,57 +90,57 @@ bool matchesRule(char *input, struct CurrentRule *currentRule, struct Rule *rule
     return false;
 }
 
-int *parseSequence(char *rule) {
+int *parseOption(char *rule) {
     char ruleCopy[32];
     
     strcpy(ruleCopy, rule);
     char *rulePart = strtok(ruleCopy, " ");
-    int sequenceLength = 0;
+    int optionLength = 0;
 
     while (rulePart) {
-        ++sequenceLength;
+        ++optionLength;
 
         rulePart = strtok(NULL, " ");
     }
 
-    int *sequence = (int *) calloc(sequenceLength + 1, sizeof(int));
-    *sequence = sequenceLength;
+    int *option = (int *) calloc(optionLength + 1, sizeof(int));
+    *option = optionLength;
 
     strcpy(ruleCopy, rule);
     rulePart = strtok(ruleCopy, " ");
 
-    int sequenceIndex = 1;
+    int optionIndex = 1;
 
     while (rulePart) {
-        sequence[sequenceIndex++] = atoi(rulePart);
+        option[optionIndex++] = atoi(rulePart);
 
         rulePart = strtok(NULL, " ");
     }
 
-    return sequence;
+    return option;
 }
 
-int **parseAlternates(char *rule) {
+int **parseOptions(char *rule) {
     char ruleCopy[32];
     
     strcpy(ruleCopy, rule);
     char *rulePart = strtok(ruleCopy, "|");
-    int *alternateCount = (int *) calloc(1, sizeof(int));
-    *alternateCount = 0;
+    int *optionCount = (int *) calloc(1, sizeof(int));
+    *optionCount = 0;
 
     while (rulePart) {
-        ++*alternateCount;
+        ++*optionCount;
 
         rulePart = strtok(NULL, "|");
     }
 
-    int **alternates = (int **) calloc(*alternateCount + 1, sizeof(int **));
-    *alternates = alternateCount;
+    int **options = (int **) calloc(*optionCount + 1, sizeof(int **));
+    *options = optionCount;
 
     strcpy(ruleCopy, rule);
     rulePart = strtok(ruleCopy, "|");
 
-    char ruleParts[*alternateCount][16];
+    char ruleParts[*optionCount][16];
     int rulePartIndex = 0;
 
     while (rulePart) {
@@ -156,15 +153,15 @@ int **parseAlternates(char *rule) {
         rulePart = strtok(NULL, "|");
     }
 
-    int alternatesIndex = 0;
+    int optionsIndex = 0;
 
-    while (alternatesIndex < *alternateCount) {
-        alternates[alternatesIndex + 1] = parseSequence(ruleParts[alternatesIndex]);
+    while (optionsIndex < *optionCount) {
+        options[optionsIndex + 1] = parseOption(ruleParts[optionsIndex]);
 
-        ++alternatesIndex;
+        ++optionsIndex;
     }
 
-    return alternates;
+    return options;
 }
 
 void parseRule(int number, char *ruleString, struct Rule *rules) {
@@ -172,10 +169,8 @@ void parseRule(int number, char *ruleString, struct Rule *rules) {
 
     if (strstr(ruleString, "\"")) {
         rules[number].character = *(ruleString + 1);
-    } else if (strstr(ruleString, "|")) {
-        rules[number].alternates = parseAlternates(ruleString);
     } else {
-        rules[number].sequence = parseSequence(ruleString);
+        rules[number].options = parseOptions(ruleString);
     }
 }
 
@@ -237,17 +232,13 @@ int validInputCount(struct RulesData *data) {
 }
 
 void freeRule(struct Rule *rule) {
-    if (rule->sequence) {
-        free(rule->sequence);
-
-        rule->sequence = NULL;
-    } else if (rule->alternates) {
-        for (int i = 0; i < **rule->alternates; i++) {
-            free(rule->alternates[i + 1]);                
+    if (rule->options) {
+        for (int i = 0; i < **rule->options; i++) {
+            free(rule->options[i + 1]);                
         }
 
-        free(rule->alternates);
-        rule->alternates = NULL;
+        free(rule->options);
+        rule->options = NULL;
     }
 }
 
