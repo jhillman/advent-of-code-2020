@@ -23,15 +23,21 @@ else
  
     let endLength="${#lastDir}-3"
     let endLength="-$endLength"
- 
+
     end=${lastDir:$endLength}
+
+    if [[ $end == 0[1-9] ]]; then
+        finalEndLength=endLength+1
+    
+        end=${lastDir:$finalEndLength}
+    fi
 fi
  
 allCorrect="true"
  
 if [ $start -le $end ]; then
-    echo "Day/Part         Answer            Correct"
-    echo "--------------   ------            -------"
+    echo "Day/Part         Answer                                        Correct"
+    echo "--------         ------                                        -------"
  
     for (( number=$start; number <= $end; number++ )); do
         directory="$(printf "day%02d" $number)"
@@ -43,8 +49,8 @@ if [ $start -le $end ]; then
             for (( part=1; part <= 2; part++ )); do 
                 answer=`./part${part}.o`
                  
-                final=`grep -m 1 -o '[0-9]\+' part${part}.c | tail -1`
-     
+                final=`grep -m 1 -o '= [^ *]*' part${part}.c | cut -d " " -f2`
+
                 if [ "$final" == "$answer" ]; then
                     correct="true"
                 else
@@ -56,16 +62,16 @@ if [ $start -le $end ]; then
                     fi
                 fi
                  
-                printf "Day %02d, part $part   %-17s %-4s\n" $number $answer $correct
+                printf "Day %02d, part $part   %-48s %-4s\n" $number $answer $correct
             done
 
-            echo "------------------------------------------"
+            echo "----------------------------------------------------------------------"
  
             popd > /dev/null
         fi
     done
  
     if [ $start -lt $end ]; then
-        printf "All              ---               %s\n" $allCorrect
+        printf "All              ---                                              %s\n" $allCorrect
     fi
 fi
