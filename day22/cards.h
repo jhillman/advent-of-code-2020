@@ -149,7 +149,7 @@ struct GameData *readGameData() {
     FILE *inputFile = fopen("input.txt", "r");
 
     if (inputFile) {
-        char *line;
+        char *line = (char *) malloc(11 * sizeof(char));;
         size_t length;
         int number;
         struct Deck *deck;
@@ -170,6 +170,8 @@ struct GameData *readGameData() {
                 addNewCard(deck, number);
             }
         }
+
+        free(line);
         
         fclose(inputFile);
 
