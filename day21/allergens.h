@@ -101,7 +101,7 @@ struct AllergenData *readAllergenData() {
         data->ingredientListsCount = 0;
         data->ingredientLists = (struct IngredientList *) malloc(ingredientListsSize * sizeof(struct IngredientList));
 
-        char *line;
+        char *line = (char *) malloc(600 * sizeof(char));
         size_t length;
 
         while (getline(&line, &length, inputFile) != -1) {
