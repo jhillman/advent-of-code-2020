@@ -1,4 +1,4 @@
-/* Day 22, part 2 = ? */
+/* Day 22, part 2 = 33661 */
 
 #include <stdio.h>
 #include "cards.h"

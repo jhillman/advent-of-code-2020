@@ -1,8 +1,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+#define MAX_ROUNDS 1200
+
 struct Card {
-    int value;
+    char value;
     struct Card *next;
 };
 
@@ -22,9 +24,10 @@ struct GameData {
     struct Deck *playerTwoDeck;
 };
 
-void addCard(struct Deck *deck, int value) {
-    struct Card *card = (struct Card *) calloc(1, sizeof(struct Card));
+void addNewCard(struct Deck *deck, char value) {
+    struct Card *card = (struct Card *) malloc(sizeof(struct Card));
     card->value = value;
+    card->next = NULL;
 
     if (deck->bottom) {
         deck->bottom->next = card;
@@ -36,45 +39,39 @@ void addCard(struct Deck *deck, int value) {
     ++deck->count;
 }
 
-int drawCard(struct Deck *deck) {
+void addCard(struct Deck *deck, struct Card *card) {
+    if (deck->bottom) {
+        deck->bottom->next = card;
+        deck->bottom = card;
+    } else {
+        deck->top = deck->bottom = card;
+    }
+
+    ++deck->count;
+}
+
+struct Card *drawCard(struct Deck *deck) {
     struct Card *card = deck->top;
-    int value = card->value;
 
     deck->top = card->next;
-    free(card);
 
     if (--deck->count == 0) {
         deck->top = deck->bottom = NULL;
     }
 
-    return value;
-}
+    card->next = NULL;
 
-bool decksEqual(struct Deck *deck1, struct Deck *deck2) {
-    bool equal = false;
-
-    if (deck1->count == deck2->count) {
-        equal = true;
-        struct Card *card1 = deck1->top;
-        struct Card *card2 = deck2->top;
-
-        for (int i = 0; equal && i < deck1->count; i++) {
-            equal = card1->value == card2->value;
-
-            card1 = card1->next;
-            card2 = card2->next;
-        }
-    }
-
-    return equal;
+    return card;
 }
 
 struct Deck *copyDeck(struct Deck *deck, int depth) {
-    struct Deck *deckCopy = (struct Deck *) calloc(1, sizeof(struct Deck));
+    struct Deck *deckCopy = (struct Deck *) malloc(sizeof(struct Deck));
+    deckCopy->top = deckCopy->bottom = NULL;
+    deckCopy->count = 0;
     struct Card *card = deck->top;
 
     for (int i = 0; i < depth; i++) {
-        addCard(deckCopy, card->value);
+        addNewCard(deckCopy, card->value);
 
         card = card->next;
     }
@@ -82,74 +79,56 @@ struct Deck *copyDeck(struct Deck *deck, int depth) {
     return deckCopy;
 }
 
+void freeCard(struct Card *card) {
+    if (card) {
+        freeCard(card->next);
+
+        free(card);
+    }
+}
+
 void freeDeck(struct Deck *deck) {
     if (deck) {
-        while (deck->count) {
-            drawCard(deck);
-        }
+        freeCard(deck->top);
 
         free(deck);
     }
 }
 
 int playGame(struct Deck *playerOneDeck, struct Deck *playerTwoDeck, bool recursive) {
-    struct Round *rounds = NULL;
-    int roundCount = 0;
+    int rounds = 0;
     bool duplicateFound = false;
 
-    while (!duplicateFound && playerOneDeck->count && playerTwoDeck->count) {
-        for (int i = 0; !duplicateFound && i < roundCount; i++) {
-            if (decksEqual(rounds[i].playerOneDeck, playerOneDeck) && decksEqual(rounds[i].playerTwoDeck, playerTwoDeck)) {
-                duplicateFound = true;
-            }
-        }
+    while (rounds < MAX_ROUNDS && playerOneDeck->count && playerTwoDeck->count) {
+        struct Card *playerOneCard = drawCard(playerOneDeck);
+        struct Card * playerTwoCard = drawCard(playerTwoDeck);
 
-        if (!duplicateFound) {
-            if (++roundCount > 1) {
-               rounds = (struct Round *) realloc(rounds, roundCount * sizeof(struct Round));
-            } else {
-               rounds = (struct Round *) malloc(roundCount * sizeof(struct Round));
-            }
+        if (recursive && playerOneCard->value <= playerOneDeck->count && playerTwoCard->value <= playerTwoDeck->count) {
+            struct Deck *playerOneDeckCopy = copyDeck(playerOneDeck, playerOneCard->value);
+            struct Deck *playerTwoDeckCopy = copyDeck(playerTwoDeck, playerTwoCard->value);
 
-            rounds[roundCount - 1] = (struct Round) { copyDeck(playerOneDeck, playerOneDeck->count), copyDeck(playerTwoDeck, playerTwoDeck->count) };
-
-            int playerOneCard = drawCard(playerOneDeck);
-            int playerTwoCard = drawCard(playerTwoDeck);
-
-            if (recursive && playerOneCard <= playerOneDeck->count && playerTwoCard <= playerTwoDeck->count) {
-                struct Deck *playerOneDeckCopy = copyDeck(playerOneDeck, playerOneCard);
-                struct Deck *playerTwoDeckCopy = copyDeck(playerTwoDeck, playerTwoCard);
-
-                if (playGame(playerOneDeckCopy, playerTwoDeckCopy, true) == 1) {
-                    addCard(playerOneDeck, playerOneCard);
-                    addCard(playerOneDeck, playerTwoCard);
-                } else {
-                    addCard(playerTwoDeck, playerTwoCard);
-                    addCard(playerTwoDeck, playerOneCard);
-                }
-
-                freeDeck(playerOneDeckCopy);
-                freeDeck(playerTwoDeckCopy);
-            } else if (playerOneCard > playerTwoCard) {
+            if (playGame(playerOneDeckCopy, playerTwoDeckCopy, true) == 1) {
                 addCard(playerOneDeck, playerOneCard);
                 addCard(playerOneDeck, playerTwoCard);
             } else {
                 addCard(playerTwoDeck, playerTwoCard);
                 addCard(playerTwoDeck, playerOneCard);
             }
+
+            freeDeck(playerOneDeckCopy);
+            freeDeck(playerTwoDeckCopy);
+        } else if (playerOneCard->value > playerTwoCard->value) {
+            addCard(playerOneDeck, playerOneCard);
+            addCard(playerOneDeck, playerTwoCard);
+        } else {
+            addCard(playerTwoDeck, playerTwoCard);
+            addCard(playerTwoDeck, playerOneCard);
         }
+
+        ++rounds;
     }
 
-    if (rounds) {
-        for (int i = 0; i < roundCount; i++) {
-            freeDeck(rounds[i].playerOneDeck);
-            freeDeck(rounds[i].playerTwoDeck);
-        }
-
-        free(rounds);
-    }
-
-    if (duplicateFound || playerOneDeck->count > playerTwoDeck->count) {
+    if (rounds >= MAX_ROUNDS || playerOneDeck->count > playerTwoDeck->count) {
         return 1;
     } else {
         return 2;
@@ -160,7 +139,7 @@ int deckScore(struct Deck *deck) {
     int score = 0;
 
     while (deck->count) {
-        score += deck->count * drawCard(deck);
+        score += deck->count * drawCard(deck)->value;
     }
 
     return score;
@@ -188,7 +167,7 @@ struct GameData *readGameData() {
                     deck = data->playerTwoDeck;
                 }
             } else if (sscanf(line, "%d", &number) == 1) {
-                addCard(deck, number);
+                addNewCard(deck, number);
             }
         }
         
