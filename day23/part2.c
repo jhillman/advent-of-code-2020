@@ -1,4 +1,4 @@
-/* Day 23, part 1 = 18930983775 */
+/* Day 23, part 2 = 18930983775 */
 
 #include <stdio.h>
 #include "cups.h"
